@@ -1,0 +1,46 @@
+name: CI - Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+   
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+  
+      - name: Restore API depenencies
+        run: dotnet restore
+        working-directory: ./VulnScanner.Api
+
+      - name: Build API
+        run: dotnet build --no-restore --configuration Release
+        working-directory: ./VulnScanner.Api
+
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+ 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore Web dependencies
+        run: dotnet restore
+        working-directory: ./VulnScanner.Web
+
+      - name: Build Web
+        run: dotnet build --no-restore --configuration Release
+        working-directory: ./VulnScanner.Web  
