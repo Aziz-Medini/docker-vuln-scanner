@@ -1,0 +1,25 @@
+services:
+  api:
+    build: ./VulnScanner.Api
+    container_name: vulnscanner-api
+    ports:
+       - "8080:8080"
+    volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+       -  vulnscanner-net
+  
+
+  web:
+    build: ./VulnScanner.Web
+    container_name: vulnscanner-web
+    ports:
+       - "5116:8080"
+    depends_on:
+       - api
+    networks:
+       - vulnscanner-net
+
+networks:
+  vulnscanner-net:
+    driver: bridge    

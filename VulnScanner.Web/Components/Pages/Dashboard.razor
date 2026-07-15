@@ -1,0 +1,149 @@
+@page "/dashboard"
+@using VulnScanner.Web.Services
+@inject ScanApiService ScanApi
+@rendermode InteractiveServer
+
+<PageTitle>Dashboard - VulnScanner</PageTitle>
+
+<h3>📊 Dashboard</h3>
+<p class="subtitle">Vue d'ensemble de tous les scans effectués.</p>
+
+@if (isLoading)
+{
+    <div class="loading-box">
+        <div class="spinner"></div>
+        <span>Loading dashboard...</span>
+    </div>
+}
+else if (errorMessage != null)
+{
+    <div class="alert-error">⚠️ @errorMessage</div>
+}
+else if (dashboard == null || dashboard.TotalScans == 0)
+{
+    <div class="empty-state">
+        <p>Aucune donnée pour le moment.</p>
+        <a href="/scan">Lancer un premier scan →</a>
+    </div>
+}
+else
+{
+    <div class="stat-cards">
+        <div class="stat-card total">
+            <div class="stat-number">@dashboard.TotalScans</div>
+            <div class="stat-label">Total Scans</div>
+        </div>
+        <div class="stat-card total">
+            <div class="stat-number">@dashboard.TotalVulnerabilities</div>
+            <div class="stat-label">Total Vulnerabilities</div>
+        </div>
+        @foreach (var sev in new[] { "CRITICAL", "HIGH", "MEDIUM", "LOW" })
+        {
+            var count = dashboard.OverallSeverityBreakdown?.FirstOrDefault(s => s.Severity == sev)?.Count ?? 0;
+            <div class="stat-card severity-@sev.ToLower()">
+                <div class="stat-number">@count</div>
+                <div class="stat-label">@sev</div>
+            </div>
+        }
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="panel">
+            <h4>📈 Tendance des scans</h4>
+            @if (dashboard.Trend != null && dashboard.Trend.Count > 0)
+            {
+                var maxVulns = dashboard.Trend.Max(t => t.TotalVulnerabilities);
+                if (maxVulns == 0) maxVulns = 1;
+
+                <div class="trend-chart">
+                    @foreach (var point in dashboard.Trend)
+                    {
+                        var heightPct = (point.TotalVulnerabilities * 100.0) / maxVulns;
+                        <div class="trend-bar-wrapper" title="@point.ImageName - @point.TotalVulnerabilities vulns">
+                            <div class="trend-bar" style="height: @(heightPct)%"></div>
+                            <div class="trend-label">@point.ImageName</div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="empty-text">Pas encore de données.</p>
+            }
+        </div>
+
+        <div class="panel">
+            <h4>🏆 Images les plus vulnérables</h4>
+            @if (dashboard.TopVulnerableImages != null && dashboard.TopVulnerableImages.Count > 0)
+            {
+                <table class="mini-table">
+                    <thead>
+                        <tr><th>Image</th><th>Vulnérabilités</th><th>Scans</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var img in dashboard.TopVulnerableImages)
+                        {
+                            <tr>
+                                <td class="image-name">@img.ImageName</td>
+                                <td>@img.TotalVulnerabilities</td>
+                                <td>@img.ScanCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="empty-text">Pas encore de données.</p>
+            }
+        </div>
+
+        <div class="panel full-width">
+            <h4>🎯 CVE les plus fréquentes</h4>
+            @if (dashboard.MostCommonCves != null && dashboard.MostCommonCves.Count > 0)
+            {
+                <table class="mini-table">
+                    <thead>
+                        <tr><th>CVE ID</th><th>Sévérité</th><th>Occurrences</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cve in dashboard.MostCommonCves)
+                        {
+                            <tr>
+                                <td class="image-name">@cve.VulnerabilityId</td>
+                                <td><span class="severity-badge severity-@cve.Severity.ToLower()">@cve.Severity</span></td>
+                                <td>@cve.Count</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="empty-text">Pas encore de données.</p>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private DashboardDto? dashboard;
+    private string? errorMessage;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            dashboard = await ScanApi.GetDashboardAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load dashboard: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

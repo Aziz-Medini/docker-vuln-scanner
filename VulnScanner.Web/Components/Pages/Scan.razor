@@ -1,0 +1,96 @@
+@page "/"
+@page "/scan"
+@using VulnScanner.Web.Services
+@inject ScanApiService ScanApi
+@rendermode InteractiveServer
+
+<PageTitle>Scan - VulnScanner</PageTitle>
+
+<h3>🐳 Docker Image Vulnerability Scanner</h3>
+<p class="subtitle">Scan any public Docker image for known CVEs using Trivy.</p>
+
+<div class="scan-box">
+    <input @bind="imageName" @bind:event="oninput" @onkeydown="HandleKeyDown"
+           placeholder="e.g. nginx:latest" />
+    <button @onclick="RunScan" disabled="@isScanning">
+        @(isScanning ? "Scanning..." : "Scan")
+    </button>
+</div>
+
+@if (errorMessage != null)
+{
+    <div class="alert-error">⚠️ @errorMessage</div>
+}
+
+@if (isScanning)
+{
+    <div class="loading-box">
+        <div class="spinner"></div>
+        <span>Running Trivy scan — this can take a moment on first run...</span>
+    </div>
+}
+
+@if (result != null && !isScanning)
+{
+    <div class="results">
+        <h4>Results for <span class="image-name">@result.ImageName</span></h4>
+        <p class="scanned-at">Scanned at @result.ScannedAt.ToLocalTime().ToString("g")</p>
+
+        <div class="stat-cards">
+            <div class="stat-card total">
+                <div class="stat-number">@result.TotalVulnerabilities</div>
+                <div class="stat-label">Total</div>
+            </div>
+            @foreach (var sev in new[] { "CRITICAL", "HIGH", "MEDIUM", "LOW", "UNKNOWN" })
+            {
+                var count = result.SeverityBreakdown?.FirstOrDefault(s => s.Severity == sev)?.Count ?? 0;
+                <div class="stat-card severity-@sev.ToLower()">
+                    <div class="stat-number">@count</div>
+                    <div class="stat-label">@sev</div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private string imageName = string.Empty;
+    private ScanResultDto? result;
+    private string? errorMessage;
+    private bool isScanning = false;
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await RunScan();
+        }
+    }
+
+    private async Task RunScan()
+    {
+        if (string.IsNullOrWhiteSpace(imageName))
+        {
+            errorMessage = "Please enter an image name.";
+            return;
+        }
+
+        isScanning = true;
+        errorMessage = null;
+        result = null;
+        StateHasChanged();
+
+        try
+        {
+            result = await ScanApi.ScanImageAsync(imageName);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Scan failed: {ex.Message}";
+        }
+        finally
+        {
+            isScanning = false;
+        }
+    }
+}

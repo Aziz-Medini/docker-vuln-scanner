@@ -1,0 +1,76 @@
+@page "/history"
+@using VulnScanner.Web.Services
+@inject ScanApiService ScanApi
+@rendermode InteractiveServer
+
+<PageTitle>History - VulnScanner</PageTitle>
+
+<h3>📜 Scan History</h3>
+<p class="subtitle">All previously scanned images, most recent first.</p>
+
+@if (isLoading)
+{
+    <div class="loading-box">
+        <div class="spinner"></div>
+        <span>Loading history...</span>
+    </div>
+}
+else if (errorMessage != null)
+{
+    <div class="alert-error">⚠️ @errorMessage</div>
+}
+else if (scans == null || scans.Count == 0)
+{
+    <div class="empty-state">
+        <p>No scans yet.</p>
+        <a href="/scan">Run your first scan →</a>
+    </div>
+}
+else
+{
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Scanned At</th>
+                <th>Total Vulnerabilities</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var scan in scans)
+            {
+                <tr>
+                    <td class="image-name">@scan.ImageName</td>
+                    <td>@scan.ScannedAt.ToLocalTime().ToString("g")</td>
+                    <td>
+                        <span class="vuln-count @(scan.TotalVulnerabilities > 0 ? "has-vulns" : "clean")">
+                            @scan.TotalVulnerabilities
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<ScanResultDto>? scans;
+    private string? errorMessage;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            scans = await ScanApi.GetHistoryAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load history: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

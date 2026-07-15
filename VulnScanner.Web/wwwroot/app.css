@@ -1,0 +1,342 @@
+html, body {
+    background-color: #0d1117;
+    color: #c9d1d9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+a, .btn-link {
+    color: #58a6ff;
+}
+
+.top-row {
+    background-color: #161b22 !important;
+    border-bottom: 1px solid #30363d;
+}
+
+.navbar-brand {
+    color: #e6edf3 !important;
+    font-weight: 600;
+}
+
+.sidebar {
+    background-image: none !important;
+    background-color: #010409 !important;
+}
+
+.sidebar .nav-item .nav-link {
+    color: #c9d1d9;
+}
+
+.sidebar .nav-item .nav-link.active,
+.sidebar .nav-item .nav-link:hover {
+    background-color: #21262d;
+    color: #58a6ff;
+}
+
+.content {
+    background-color: #0d1117;
+}
+
+h1, h2, h3, h4 {
+    color: #e6edf3;
+}
+
+input[type="text"], input {
+    background-color: #21262d;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+    border-radius: 6px;
+    padding: 6px 10px;
+}
+
+input::placeholder {
+    color: #6e7681;
+}
+
+button {
+    background-color: #238636;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+button:hover:not(:disabled) {
+    background-color: #2ea043;
+}
+
+button:disabled {
+    background-color: #30363d;
+    cursor: not-allowed;
+}
+
+table {
+    background-color: #161b22;
+    border-radius: 8px;
+    overflow: hidden;
+    border-collapse: separate !important;
+    border-spacing: 0;
+}
+
+table th {
+    background-color: #21262d !important;
+    color: #e6edf3 !important;
+    border: 1px solid #30363d !important;
+    padding: 8px 12px !important;
+}
+
+table td {
+    border: 1px solid #21262d !important;
+    color: #c9d1d9;
+    padding: 8px 12px !important;
+}
+
+.severity-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.severity-critical { background-color: #490202; color: #ff7b72; border: 1px solid #f85149; }
+.severity-high      { background-color: #4d2d00; color: #ffa657; border: 1px solid #db6d28; }
+.severity-medium    { background-color: #4d4400; color: #e3b341; border: 1px solid #9e6a03; }
+.severity-low       { background-color: #0d3320; color: #56d364; border: 1px solid #238636; }
+.severity-unknown   { background-color: #21262d; color: #8b949e; border: 1px solid #30363d; }
+
+.page {
+    background-color: #0d1117 !important;
+}
+
+main {
+    background-color: #0d1117 !important;
+}
+
+.content, article.content {
+    background-color: #0d1117 !important;
+    color: #c9d1d9 !important;
+}
+
+.top-row a, .top-row a:visited {
+    color: #58a6ff !important;
+}
+
+/* ===== VulnScanner UI polish ===== */
+.subtitle {
+    color: #8b949e;
+    margin-top: -8px;
+    margin-bottom: 20px;
+}
+
+.scan-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.scan-box input {
+    width: 320px;
+    font-size: 0.95rem;
+}
+
+.image-name {
+    color: #58a6ff;
+    font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.scanned-at {
+    color: #8b949e;
+    font-size: 0.9rem;
+}
+
+.alert-error {
+    background-color: #490202;
+    border: 1px solid #f85149;
+    color: #ffb3ac;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+.loading-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #8b949e;
+    padding: 16px 0;
+}
+
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 3px solid #30363d;
+    border-top-color: #58a6ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.stat-cards {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.stat-card {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 16px 20px;
+    min-width: 100px;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+.stat-card.total .stat-number { color: #e6edf3; }
+.stat-card.severity-critical .stat-number { color: #ff7b72; }
+.stat-card.severity-high .stat-number { color: #ffa657; }
+.stat-card.severity-medium .stat-number { color: #e3b341; }
+.stat-card.severity-low .stat-number { color: #56d364; }
+.stat-card.severity-unknown .stat-number { color: #8b949e; }
+
+.stat-card.severity-critical { border-color: #f85149; }
+.stat-card.severity-high { border-color: #db6d28; }
+.stat-card.severity-medium { border-color: #9e6a03; }
+.stat-card.severity-low { border-color: #238636; }
+
+.empty-state {
+    color: #8b949e;
+    padding: 30px 0;
+}
+
+.empty-state a {
+    color: #58a6ff;
+}
+
+.history-table {
+    width: 100%;
+    max-width: 700px;
+}
+
+.vuln-count {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.vuln-count.clean {
+    background-color: #0d3320;
+    color: #56d364;
+}
+
+.vuln-count.has-vulns {
+    background-color: #4d2d00;
+    color: #ffa657;
+}
+
+/* ===== Dashboard ===== */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.panel {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 16px 20px;
+}
+
+.panel.full-width {
+    grid-column: 1 / -1;
+}
+
+.panel h4 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 1rem;
+    color: #e6edf3;
+}
+
+.empty-text {
+    color: #8b949e;
+    font-size: 0.9rem;
+}
+
+.trend-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 160px;
+    padding-top: 10px;
+    overflow-x: auto;
+}
+
+.trend-bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+    min-width: 40px;
+}
+
+.trend-bar {
+    width: 24px;
+    background-color: #58a6ff;
+    border-radius: 4px 4px 0 0;
+    min-height: 3px;
+    transition: background-color 0.15s ease;
+}
+
+.trend-bar-wrapper:hover .trend-bar {
+    background-color: #79c0ff;
+}
+
+.trend-label {
+    font-size: 0.65rem;
+    color: #8b949e;
+    margin-top: 6px;
+    max-width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.mini-table {
+    width: 100%;
+}
+
+.mini-table th, .mini-table td {
+    padding: 6px 10px !important;
+    font-size: 0.9rem;
+}
+
+@@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
