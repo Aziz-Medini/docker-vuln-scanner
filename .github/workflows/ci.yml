@@ -12,13 +12,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-   
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-  
-      - name: Restore API depenencies
+
+      - name: Restore API dependencies
         run: dotnet restore
         working-directory: ./VulnScanner.Api
 
@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
- 
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -43,7 +43,7 @@ jobs:
 
       - name: Build Web
         run: dotnet build --no-restore --configuration Release
-        working-directory: ./VulnScanner.Web  
+        working-directory: ./VulnScanner.Web
 
   build-docker-images:
     runs-on: ubuntu-latest
@@ -51,9 +51,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-    
-      -name: Build API Docker image
-       run: docker build -t vulnscanner-api ./VulnScanner.Api
 
-      -name: Build Web Docker image
-       run: docker build -t vulnscanner-web ./VulnScanner.Web 
+      - name: Build API Docker image
+        run: docker build -t vulnscanner-api ./VulnScanner.Api
+
+      - name: Build Web Docker image
+        run: docker build -t vulnscanner-web ./VulnScanner.Web
